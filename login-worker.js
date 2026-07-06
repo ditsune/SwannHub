@@ -364,7 +364,7 @@ async function processAccounts(accounts, progressCallback) {
                 const info = await detectAccountInfo(page);
                 result.twoSV = info.twoSV;
                 result.xbox = info.xbox;
-                result.message = '✅ Sukses! (no code)';
+                result.message = 'Sukses! (no code)';
                 
             } else if (state.state === 'error') {
                 result.status = 'skip';
@@ -397,7 +397,7 @@ async function processAccounts(accounts, progressCallback) {
                     const info = await detectAccountInfo(page);
                     result.twoSV = info.twoSV;
                     result.xbox = info.xbox;
-                    result.message = '✅ Sukses! (no code)';
+                    result.message = 'Sukses! (no code)';
                 } else if (finalState.state === 'identity_challenge') {
                     console.log(`[${account.username}] 🖼️ Identity Challenge (Tebak Gambar) terdeteksi - skip`);
                     result.status = 'skip';
@@ -628,7 +628,7 @@ await wait(2000);
                 const info = await detectAccountInfo(page);
                 return { 
                     status: 'success', 
-                    message: `✅ Sukses! (kode #${i+1})`,
+                    message: `Sukses! (kode #${i+1})`,
                     twoSV: info.twoSV,
                     xbox: info.xbox
                 };
