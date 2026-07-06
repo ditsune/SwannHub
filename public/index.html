@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roblox Account Manager - MayoBlox</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <div class="header-row">
+        <div></div> <!-- spacer -->
+        <div class="header-center">
+            <h1>🎮 Roblox Login Automation</h1>
+            <p class="subtitle">Created by Dits ^_^</p>
+        </div>
+        <button class="history-btn" id="historyBtn" title="History">
+            <svg width="20" height="20" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 5.33337V8.00004L9.33333 9.33337M2.03333 7.33338C2.18272 5.86675 2.86683 4.50645 3.95515 3.51202C5.04346 2.51759 6.45979 1.95864 7.93391 1.9418C9.40803 1.92496 10.8368 2.45142 11.9475 3.42074C13.0582 4.39005 13.7733 5.73436 13.9561 7.1972C14.139 8.66003 13.7769 10.139 12.9389 11.3519C12.1009 12.5648 10.8458 13.4267 9.41285 13.7733C7.97994 14.1198 6.4696 13.9267 5.16999 13.2308C3.87038 12.5348 2.87247 11.3848 2.36666 10M2.03333 13.3334V10H5.36666" stroke="currentColor" stroke-width="1.16667" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            History
+        </button>
+    </div>
+    
+    <!-- HISTORY MODAL -->
+    <div class="history-modal-overlay" id="historyModal" style="display: none;">
+        <div class="history-modal">
+            <div class="history-modal-header">
+                <h3>📋 History Proses</h3>
+                <button class="history-modal-close" id="historyModalClose">✕</button>
+            </div>
+            <div class="history-search">
+                <input type="text" id="historySearch" placeholder="🔍 Cari username..." oninput="filterHistory()">
+            </div>
+            <div class="history-list" id="historyList">
+                <p class="history-empty">Belum ada history</p>
+            </div>
+            <div class="history-modal-footer">
+                <span class="history-count" id="historyCount">0 akun</span>
+                <button class="history-clear-btn" onclick="clearHistory()">🗑️ Clear History</button>
+            </div>
+        </div>
+    </div>
+        
+        <!-- BULK INPUT SECTION -->
+        <div class="bulk-section">
+            <div class="bulk-header" onclick="toggleBulk()">
+                <h3>📋 Bulk Input (Copy-Paste)</h3>
+                <span class="toggle-icon" id="bulkToggleIcon">▲</span>
+            </div>
+            <div class="bulk-content" id="bulkContent">
+                <p class="bulk-format">
+                    Format: <code>username	password	code1	code2	code3	code4	code5</code><br>
+                    <small>Pisahkan dengan TAB. Support auto-detect format bebas.</small>
+                </p>
+                
+                <div class="bulk-top">
+                    <textarea id="bulkInput" rows="5" placeholder="Paste data akun di sini — username, password, kode backup, berantakan pun oke…"></textarea>
+                    <div class="bulk-top-btns">
+                        <button class="bulk-btn-paste" id="bulkBtnPaste">📋 Auto Paste</button>
+                        <button class="bulk-btn-clear" id="bulkBtnClear">🗑️ Clear</button>
+                    </div>
+                </div>
+                
+                <span class="parse-result" id="parseResult"></span>
+            </div>
+        </div>
+        
+        <!-- FORM INPUT SECTION -->
+        <div class="accounts-container" id="accountsContainer">
+        </div>
+        
+        <div class="button-group">
+            <button class="btn-add" onclick="addAccount()">+ Tambah Akun</button>
+            <button class="btn-process" id="btnProcess" onclick="processAccounts()">▶ Mulai Proses</button>
+        </div>
+        
+        <div class="results-section" id="resultsSection" style="display: none;">
+            <h2>📊 Status Proses</h2>
+            <div class="progress-info">
+                <span id="progressText">0/0</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="results-header">
+                <button class="btn-retry" id="btnRetry" onclick="retryFailed()" style="display: none;">🔄 Ulangi yang Gagal</button>
+                <button class="btn-reset" onclick="resetAll()">🔄 Reset & Input Baru</button>
+            </div>
+            <div id="resultsContainer"></div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

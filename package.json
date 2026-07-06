@@ -1,0 +1,13 @@
+{
+  "name": "roblox-login-automation",
+  "version": "1.0.0",
+  "description": "Automated Roblox login for account management",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "puppeteer": "^21.11.0"
+  }
+}
