@@ -438,6 +438,7 @@ function displayResults(data) {
                 extraInfo += `<span class="result-badge ${xboxClass}">🎮 ${r.xbox}</span>`;
             }
             if (r.challenge === 'guess_image') extraInfo += `<span class="result-badge badge-challenge">🖼️ Tebak Gambar</span>`;
+            if (r.challenge === 'passkey') extraInfo += `<span class="result-badge badge-challenge">🔑 Passkey</span>`;
 
             return `
                 <div class="result-item ${statusClass}">
@@ -560,7 +561,7 @@ function renderHistory(filter = '') {
         container.innerHTML = filtered.map(h => `
             <div class="history-item ${h.status}">
                 <span class="history-item-icon">${h.status === 'success' ? '✅' : h.status === 'skip' ? '⚠️' : '❌'}</span>
-                <span class="history-item-username">${h.username}</span>
+                <span class="history-item-username" onclick="copyToClipboard('${h.username}')" title="Click to copy">${h.username}</span>
                 <span class="history-item-message">${h.message}</span>
                 <div class="history-item-badges">
                     ${h.twoSV ? `<span class="result-badge badge-2sv">${h.twoSV}</span>` : ''}
@@ -593,4 +594,24 @@ function closeHistoryModal() {
         // Hapus class dari body untuk menghilangkan blur
         document.body.classList.remove('modal-open');
     }
+}
+
+// ============================================================
+// COPY TO CLIPBOARD
+// ============================================================
+async function copyToClipboard(text) {
+    try {
+        await navigator.clipboard.writeText(text);
+        const toast = document.createElement('div');
+        toast.textContent = `${text} di copy ke clipboard!`;
+        toast.style.cssText = `
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: #3bc48b; color: #0b1018; padding: 8px 18px;
+            border-radius: 30px; font-size: 0.75rem; font-weight: 600;
+            z-index: 99999; pointer-events: none;
+            animation: fadeInOut 1.5s ease forwards;
+        `;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 1500);
+    } catch(e) {}
 }

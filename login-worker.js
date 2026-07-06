@@ -93,7 +93,16 @@ async function checkPageState(page) {
             ];
             for (const sel of errorSelectors) {
                 const el = document.querySelector(sel);
-                if (el && el.textContent.trim()) return { state: 'error', message: el.textContent.trim() };
+                if (el && el.textContent.trim()) {
+                    const msg = el.textContent.trim();
+                    
+                    // Cek Passkey di error message
+                    if (msg.includes('only has a passkey') || msg.includes('Your account only has a passkey')) {
+                        return { state: 'passkey', message: msg };
+                    }
+                    
+                    return { state: 'error', message: msg };
+                }
             }
             
             // Cek overlay 2SV atau Identity Challenge
@@ -374,8 +383,14 @@ async function processAccounts(accounts, progressCallback) {
             } else if (state.state === 'identity_challenge') {
                 console.log(`[${account.username}] 🖼️ Identity Challenge (Tebak Gambar) terdeteksi - skip`);
                 result.status = 'skip';
-                result.message = '⚠️ Tebak Gambar (Confirm Identity)';
+                result.message = '⚠️ Tebak Gambar';
                 result.challenge = 'guess_image';
+                
+            } else if (state.state === 'passkey') {
+                console.log(`[${account.username}] 🔑 Passkey only - skip`);
+                result.status = 'skip';
+                result.message = '🔑 Passkey';
+                result.challenge = 'passkey';
                 
             } else if (state.state === '2sv') {
                 console.log(`[${account.username}] 🔐 2SV terdeteksi!`);
@@ -401,8 +416,13 @@ async function processAccounts(accounts, progressCallback) {
                 } else if (finalState.state === 'identity_challenge') {
                     console.log(`[${account.username}] 🖼️ Identity Challenge (Tebak Gambar) terdeteksi - skip`);
                     result.status = 'skip';
-                    result.message = '⚠️ Tebak Gambar (Confirm Identity)';
+                    result.message = '⚠️ Tebak Gambar';
                     result.challenge = 'guess_image';
+                } else if (finalState.state === 'passkey') {
+                    console.log(`[${account.username}] 🔑 Passkey only - skip`);
+                    result.status = 'skip';
+                    result.message = '🔑 Passkey';
+                    result.challenge = 'passkey';
                 } else {
                     result.status = 'failed';
                     result.message = `❌ ${finalState.message || 'Timeout'}`;
@@ -461,7 +481,6 @@ async function handle2SV(page, backupCodes, username) {
 // =====================================================
 // STEP 1: Klik "Use another verification method"
 // =====================================================
-// STEP 1: Klik "Use another verification method"
 let clicked = false;
 
 for (let attempt = 0; attempt < 5; attempt++) {
@@ -498,8 +517,7 @@ for (let attempt = 0; attempt < 5; attempt++) {
             return 'not-found';
         });
         
-        if (result === 'clicked') {
-            // Tunggu overlay berubah
+                if (result === 'clicked') {
             await wait(1000);
             const checkOverlay = await page.evaluate(() => {
                 const overlay = document.querySelector('.foundation-web-dialog-overlay[data-state="open"]');
@@ -517,6 +535,27 @@ for (let attempt = 0; attempt < 5; attempt++) {
     } catch(e) {}
     await wait(1500);
 }
+
+if (!clicked) {
+    if (await isHome(page)) {
+        const info = await detectAccountInfo(page);
+        return { status: 'success', message: '✅ Login sukses!', twoSV: info.twoSV, xbox: info.xbox };
+    }
+    return { status: 'failed', message: '❌ STEP 1 gagal' };
+}
+
+console.log(`  [${username}] STEP 1 ✅`);
+await wait(2000);
+
+try {
+    await page.waitForSelector('.foundation-web-dialog-overlay[data-state="open"]', { timeout: 8000 });
+} catch(e) {
+    if (await isHome(page)) {
+        const info = await detectAccountInfo(page);
+        return { status: 'success', message: '✅ Login sukses!', twoSV: info.twoSV, xbox: info.xbox };
+    }
+}
+await wait(1000);
 
 // =====================================================
 // STEP 2: Klik "Backup Code" di overlay baru
