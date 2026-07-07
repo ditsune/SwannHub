@@ -131,15 +131,14 @@ body.modal-open .container {
 .history-modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(20px) saturate(1.5);
-    -webkit-backdrop-filter: blur(20px) saturate(1.5);
+    background: rgba(0, 0, 0, 0.75); /* dari 0.6 + hapus backdrop-filter */
     z-index: 9999;
     display: flex;
     align-items: center;
     justify-content: center;
-    animation: modalFadeIn 0.3s ease-out;
+    animation: modalFadeIn 0.2s ease-out; /* 0.3s → 0.2s */
     padding: 20px;
+    will-change: opacity;
 }
 
 @keyframes modalFadeIn {
@@ -148,7 +147,7 @@ body.modal-open .container {
 }
 
 .history-modal {
-    background: rgba(20, 28, 38, 0.95);
+    background: rgba(20, 28, 38, 0.98); /* dari 0.95 + hapus backdrop-filter */
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 28px;
     width: 100%;
@@ -157,11 +156,11 @@ body.modal-open .container {
     display: flex;
     flex-direction: column;
     box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
-    animation: modalSlideUp 0.35s ease-out;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    animation: modalSlideUp 0.25s ease-out; /* 0.35s → 0.25s */
     overflow: hidden;
+    will-change: transform;
 }
+
 
 @keyframes modalSlideUp {
     from { opacity: 0; transform: translateY(30px) scale(0.95); }
@@ -230,6 +229,9 @@ body.modal-open .container {
     max-height: 46vh;
     width: 100%;
     box-sizing: border-box;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    will-change: scroll-position;
 }
 
 .history-empty {
@@ -248,16 +250,15 @@ body.modal-open .container {
     border-radius: 8px;
     margin-bottom: 6px;
     border: 1px solid rgba(255, 255, 255, 0.04);
-    transition: all 0.2s ease;
     width: 100%;
     box-sizing: border-box;
     font-size: 0.75rem;
+    transform: translateZ(0); /* GPU accelerate */
 }
 
 .history-item:hover {
     background: rgba(255, 255, 255, 0.06);
     border-color: rgba(255, 255, 255, 0.08);
-    transform: translateX(4px);
 }
 
 .history-item.success { border-left: 3px solid #3bc48b; }
@@ -318,6 +319,7 @@ body.modal-open .container {
     align-items: center;
     padding: 14px 24px;
     border-top: 1px solid rgba(255, 255, 255, 0.04);
+    background: rgba(20, 28, 38, 0.98);
 }
 
 .history-count {
@@ -486,11 +488,9 @@ body.modal-open {
     position: sticky;
     top: 0;
     z-index: 100;
-    background: rgba(18, 24, 34, 0.95);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    padding: 8px 0; /* 12px → 8px */
-    margin: 0 0 12px 0; /* 0 0 16px 0 → 0 0 12px 0 */
+    background: rgba(18, 24, 34, 0.98); /* dari 0.95 + hapus backdrop-filter */
+    padding: 8px 0;
+    margin: 0 0 12px 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     display: flex;
     gap: 12px;

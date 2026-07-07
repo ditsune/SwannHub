@@ -679,7 +679,7 @@ await wait(2000);
             return { status: 'success', message: '✅ Login sukses!', twoSV: info.twoSV, xbox: info.xbox };
         }
         
-        return { status: 'failed', message: `❌ Semua ${validCodes.length} kode invalid` };
+        return { status: 'failed', message: '❌ Invalid Backup' };
         
     } catch (e) {
         if (await isHome(page)) {
