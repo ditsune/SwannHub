@@ -100,22 +100,53 @@ function parseBulk() {
     const hasTabs = lines.some(line => line.includes('\t'));
 
     if (hasTabs) {
-        for (let i = 0; i < lines.length; i++) {
-            const parts = lines[i].trim().split('\t');
-            if (parts.length < 2) {
-                errors.push(`Baris ${i + 1}: Format salah`);
-                continue;
-            }
-            const username = parts[0].trim();
-            const password = parts[1].trim();
-            const backupCodes = parts.slice(2, 7).map(c => c.trim()).filter(c => c);
-            if (!username || !password) {
-                errors.push(`Baris ${i + 1}: Username/password kosong`);
-                continue;
-            }
-            accounts.push({ username, password, backupCodes });
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        const parts = line.split('\t');
+        
+        if (parts.length < 2) {
+            errors.push(`Baris ${i + 1}: Format salah`);
+            continue;
         }
-    } else {
+        
+        let username = parts[0].trim();
+        let password = '';
+        const backupCodes = [];
+        
+        // Deteksi: kolom pertama invoice? (TLOG/VILOG)
+        const isInvoice = /^(TLOG|VILOG)\d{8}-[A-Z0-9]{7}$/i.test(username);
+        
+        if (isInvoice) {
+            // Format: TLOG [TAB] username [TAB] password [TAB] Robux [TAB] code1...
+            username = parts[1] ? parts[1].trim() : '';  // Kolom 2
+            password = parts[2] ? parts[2].trim() : '';  // Kolom 3
+            
+            // Mulai dari kolom 4+ (skip Robux, ambil backup codes)
+            for (let j = 3; j < parts.length && backupCodes.length < 5; j++) {
+                const code = parts[j].trim();
+                // Skip kolom yang mengandung "Robux"
+                if (/robux/i.test(code)) continue;
+                if (code && /^[a-z0-9]{8,9}$/i.test(code)) {
+                    backupCodes.push(code);
+                }
+            }
+        } else {
+            // Format biasa: username [TAB] password [TAB] code1...
+            password = parts[1] ? parts[1].trim() : '';
+            for (let j = 2; j < parts.length && backupCodes.length < 5; j++) {
+                const code = parts[j].trim();
+                if (code) backupCodes.push(code);
+            }
+        }
+        
+        if (!username || !password) {
+            errors.push(`Baris ${i + 1}: Username/password kosong`);
+            continue;
+        }
+        
+        accounts.push({ username, password, backupCodes });
+    }
+        }else {
         // Split by block (dipisah oleh garis kosong atau header DETAIL PESANAN / NOTA)
         const blocks = bulkText.split(/\n\s*\n/);
 
@@ -133,7 +164,8 @@ function parseBulk() {
                 const trimmed = line.trim();
 
                 // Skip non-account lines
-                if (/^(Invoice ID|TLOG|VILOG|Terbayar|Tanggal|Mohon|Harap|⌗|—|Pesanan|MinMayo|@|http)/i.test(trimmed)) continue;
+                if (/^(Invoice ID|Terbayar|Tanggal|Mohon|Harap|⌗|—|Pesanan|MinMayo|@|http)/i.test(trimmed)) continue;
+                if (/^(TLOG|VILOG)\d{8}-[A-Z0-9]{7}$/i.test(trimmed)) continue;
                 if (/Jumlah Robux/i.test(trimmed)) continue;
                 if (/\b(Rp|IDR)\s*[\d.,]+/i.test(trimmed)) continue;
 
