@@ -116,12 +116,13 @@ function parseBulk() {
             accounts.push({ username, password, backupCodes });
         }
     } else {
-        const allText = lines.join('\n');
-        const blocks = allText.split(/\n\s*\n|\n-{3,}\n|\n={3,}\n/);
+        // Split by block (dipisah oleh garis kosong atau header DETAIL PESANAN / NOTA)
+        const blocks = bulkText.split(/\n\s*\n/);
 
         for (let b = 0; b < blocks.length; b++) {
             const block = blocks[b].trim();
             if (!block) continue;
+            
             const blockLines = block.split('\n');
 
             let username = null;
@@ -131,74 +132,78 @@ function parseBulk() {
             for (const line of blockLines) {
                 const trimmed = line.trim();
 
+                // Skip non-account lines
+                if (/^(Invoice ID|TLOG|VILOG|Terbayar|Tanggal|Mohon|Harap|⌗|—|Pesanan|MinMayo|@|http)/i.test(trimmed)) continue;
+                if (/Jumlah Robux/i.test(trimmed)) continue;
+                if (/\b(Rp|IDR)\s*[\d.,]+/i.test(trimmed)) continue;
+
+                // Username detection
+                if (/👤\s*Username/i.test(trimmed)) {
+                    username = trimmed.replace(/.*Username\s*[:`']\s*/i, '').replace(/['`"]/g, '').trim();
+                    continue;
+                }
                 if (/^(usn|username|user|akun|id)\s*[:=]/i.test(trimmed)) {
                     username = trimmed.replace(/^(usn|username|user|akun|id)\s*[:=]\s*/i, '').replace(/['`"]/g, '').trim();
+                    continue;
+                }
+                const usnMatch = trimmed.match(/^usn\s*:\s*(.+)/i);
+                if (usnMatch) { username = usnMatch[1].trim(); continue; }
+
+                // Password detection
+                if (/🔑\s*Password/i.test(trimmed)) {
+                    password = trimmed.replace(/.*Password\s*[:`']\s*/i, '').replace(/['`"]/g, '').trim();
                     continue;
                 }
                 if (/^(pw|pass|password|pwd|sandi)\s*[:=]/i.test(trimmed)) {
                     password = trimmed.replace(/^(pw|pass|password|pwd|sandi)\s*[:=]\s*/i, '').replace(/['`"]/g, '').trim();
                     continue;
                 }
+                const pwMatch = trimmed.match(/^pw\s*:\s*(.+)/i);
+                if (pwMatch) { password = pwMatch[1].trim(); continue; }
+
+                // Backup Code detection
+                if (/🛡\s*Backup/i.test(trimmed)) {
+                    const codeText = trimmed.replace(/.*Backup[^:]*\s*[:`']\s*/i, '').replace(/['`"]/g, '');
+                    const codes = codeText.split(/[,;\s]+/).map(c => c.trim()).filter(c => /^[a-z0-9]{8,9}$/i.test(c));
+                    backupCodes.push(...codes);
+                    continue;
+                }
                 if (/^(backup|code|kode|backup code|backupcode)\s*[:=]/i.test(trimmed)) {
                     const codeText = trimmed.replace(/^(backup|code|kode|backup code|backupcode)\s*[:=]\s*/i, '').replace(/['`"]/g, '');
-                    const codes = codeText.split(/[,;\s]+/).map(c => c.trim()).filter(c => c.length >= 8);
+                    const codes = codeText.split(/[,;\s]+/).map(c => c.trim()).filter(c => /^[a-z0-9]{8,9}$/i.test(c));
                     backupCodes.push(...codes);
                     continue;
                 }
 
+                // Backup code standalone (8-9 char alphanumeric)
                 if (/^[a-z0-9]{8,9}$/i.test(trimmed)) {
                     backupCodes.push(trimmed);
                     continue;
                 }
-
-                if (/👤\s*Username/i.test(trimmed)) {
-                    username = trimmed.replace(/.*Username\s*[:`']\s*/i, '').replace(/['`"]/g, '').trim();
-                    continue;
-                }
-                if (/🔑\s*Password/i.test(trimmed)) {
-                    password = trimmed.replace(/.*Password\s*[:`']\s*/i, '').replace(/['`"]/g, '').trim();
-                    continue;
-                }
-                if (/🛡\s*Backup/i.test(trimmed)) {
-                    const codeText = trimmed.replace(/.*Backup[^:]*\s*[:`']\s*/i, '').replace(/['`"]/g, '');
-                    const codes = codeText.split(/[,;\s]+/).map(c => c.trim()).filter(c => c.length >= 8);
-                    backupCodes.push(...codes);
-                    continue;
-                }
-
-                const usnMatch = trimmed.match(/^usn\s*:\s*(.+)/i);
-                if (usnMatch) {
-                    username = usnMatch[1].trim();
-                    continue;
-                }
-                const pwMatch = trimmed.match(/^pw\s*:\s*(.+)/i);
-                if (pwMatch) {
-                    password = pwMatch[1].trim();
-                    continue;
-                }
             }
 
+            // Fallback: cari di baris setelah label
             if (!username) {
                 for (let j = 0; j < blockLines.length; j++) {
                     if (/usn|username|user|akun/i.test(blockLines[j]) && blockLines[j + 1]) {
-                        username = blockLines[j + 1].trim();
-                        break;
+                        username = blockLines[j + 1].trim(); break;
                     }
                 }
             }
             if (!password) {
                 for (let j = 0; j < blockLines.length; j++) {
                     if (/pw|pass|password|sandi/i.test(blockLines[j]) && blockLines[j + 1]) {
-                        password = blockLines[j + 1].trim();
-                        break;
+                        password = blockLines[j + 1].trim(); break;
                     }
                 }
             }
 
             if (username && password) {
-                accounts.push({ username, password, backupCodes: backupCodes.slice(0, 5) });
-            } else {
-                errors.push(`Blok ${b + 1}: Username/password tidak ditemukan`);
+                // Skip duplicate accounts
+                const exists = accounts.find(a => a.username === username);
+                if (!exists) {
+                    accounts.push({ username, password, backupCodes: backupCodes.slice(0, 5) });
+                }
             }
         }
     }
@@ -278,27 +283,38 @@ function fillForm(accounts) {
         }
 
         card.innerHTML = `
-            <div class="account-header">
-                <h3>Account #${idx + 1}</h3>
-                <button class="btn-remove" onclick="removeAccount(${idx})">✕</button>
+            <div class="account-header" onclick="toggleCard(this)">
+                <h3>▾ ${acc.username}</h3>
+                <button class="btn-remove" onclick="event.stopPropagation(); removeAccount(${idx})">✕</button>
             </div>
-            <div class="form-group">
-                <label>Username</label>
-                <input type="text" class="username" placeholder="Username" value="${acc.username}" required>
-            </div>
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" class="password" placeholder="Password" value="${acc.password}" required>
-            </div>
-            <div class="form-group">
-                <label>5 Backup Codes</label>
-                <div class="backup-codes-container">${backupInputs.join('')}</div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" class="username" placeholder="Username" value="${acc.username}" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" class="password" placeholder="Password" value="${acc.password}" required>
+                </div>
+                <div class="form-group">
+                    <label>5 Backup Codes</label>
+                    <div class="backup-codes-container">${backupInputs.join('')}</div>
+                </div>
             </div>
         `;
         container.appendChild(card);
     });
 
     accountCount = accounts.length;
+}
+
+// Toggle card collapse
+function toggleCard(header) {
+    const body = header.nextElementSibling;
+    const isCollapsed = body.classList.toggle('collapsed');
+    const h3 = header.querySelector('h3');
+    const username = h3.textContent.replace(/^[▸▾]\s*/, '');
+    h3.textContent = isCollapsed ? `▸ ${username}` : `▾ ${username}`;
 }
 
 // ============================================================
@@ -311,26 +327,28 @@ function addAccount() {
     newCard.className = 'account-card';
     newCard.setAttribute('data-index', accountCount - 1);
     newCard.innerHTML = `
-        <div class="account-header">
-            <h3>Account #${accountCount}</h3>
-            <button class="btn-remove" onclick="removeAccount(${accountCount - 1})">✕</button>
+        <div class="account-header" onclick="toggleCard(this)">
+            <h3>▾ Account #${accountCount}</h3>
+            <button class="btn-remove" onclick="event.stopPropagation(); removeAccount(${accountCount - 1})">✕</button>
         </div>
-        <div class="form-group">
-            <label>Username</label>
-            <input type="text" class="username" placeholder="Username" required>
-        </div>
-        <div class="form-group">
-            <label>Password</label>
-            <input type="password" class="password" placeholder="Password" required>
-        </div>
-        <div class="form-group">
-            <label>5 Backup Codes</label>
-            <div class="backup-codes-container">
-                <input type="text" class="backup-code" maxlength="9" placeholder="Code 1">
-                <input type="text" class="backup-code" maxlength="9" placeholder="Code 2">
-                <input type="text" class="backup-code" maxlength="9" placeholder="Code 3">
-                <input type="text" class="backup-code" maxlength="9" placeholder="Code 4">
-                <input type="text" class="backup-code" maxlength="9" placeholder="Code 5">
+        <div class="card-body">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" class="username" placeholder="Username" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" class="password" placeholder="Password" required>
+            </div>
+            <div class="form-group">
+                <label>5 Backup Codes</label>
+                <div class="backup-codes-container">
+                    <input type="text" class="backup-code" maxlength="9" placeholder="Code 1">
+                    <input type="text" class="backup-code" maxlength="9" placeholder="Code 2">
+                    <input type="text" class="backup-code" maxlength="9" placeholder="Code 3">
+                    <input type="text" class="backup-code" maxlength="9" placeholder="Code 4">
+                    <input type="text" class="backup-code" maxlength="9" placeholder="Code 5">
+                </div>
             </div>
         </div>
     `;

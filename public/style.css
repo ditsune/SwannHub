@@ -716,14 +716,32 @@ body.modal-open {
 }
 
 /* ============================================================
-   RESULTS
+   STICKY BUTTONS
+   ============================================================ */
+.sticky-buttons {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(18, 24, 34, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 12px 0;
+    margin: 0 0 16px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ============================================================
+   RESULTS - Scrollable (di atas)
    ============================================================ */
 .results-section {
-    margin-top: 28px;
+    margin-top: 0;
+    margin-bottom: 20px;
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.04);
     border-radius: 24px;
     padding: 20px 22px 22px;
+    max-height: 350px;
+    overflow-y: auto;
 }
 
 .results-section h2 {
@@ -731,6 +749,42 @@ body.modal-open {
     font-weight: 700;
     color: #d6e2f0;
     margin-bottom: 4px;
+    position: sticky;
+    top: 0;
+    background: rgba(18, 24, 34, 0.95);
+    padding-bottom: 8px;
+    z-index: 2;
+}
+
+/* ============================================================
+   ACCOUNT CARDS - Collapsible
+   ============================================================ */
+.account-card .account-header {
+    cursor: pointer;
+    user-select: none;
+    transition: 0.15s;
+}
+
+.account-card .account-header:hover {
+    opacity: 0.8;
+}
+
+.account-card .account-header h3 {
+    transition: 0.2s;
+}
+
+.account-card .card-body {
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    max-height: 500px;
+    opacity: 1;
+}
+
+.account-card .card-body.collapsed {
+    max-height: 0;
+    opacity: 0;
+    padding-top: 0;
+    margin-top: 0;
 }
 
 .progress-info {

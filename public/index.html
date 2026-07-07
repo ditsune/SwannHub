@@ -72,16 +72,13 @@
         </div>
     </div>
 
-    <!-- ACCOUNT CARDS -->
-    <div class="accounts-container" id="accountsContainer"></div>
-
-    <!-- BUTTONS -->
-    <div class="button-group">
+    <!-- STICKY BUTTON GROUP -->
+    <div class="button-group sticky-buttons">
         <button class="btn-add" onclick="addAccount()">+ Tambah Akun</button>
         <button class="btn-process" id="btnProcess" onclick="processAccounts()">▶ Mulai Proses</button>
     </div>
 
-    <!-- RESULTS -->
+    <!-- RESULTS (scrollable, di atas) -->
     <div class="results-section" id="resultsSection" style="display: none;">
         <h2>📊 Status Proses</h2>
         <div class="progress-info"><span id="progressText">0/0</span></div>
@@ -92,6 +89,9 @@
         </div>
         <div id="resultsContainer"></div>
     </div>
+
+    <!-- ACCOUNT CARDS (collapsible, di bawah) -->
+    <div class="accounts-container" id="accountsContainer"></div>
 </div>
 
 <script src="script.js"></script>
