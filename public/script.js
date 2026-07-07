@@ -633,3 +633,62 @@ async function copyToClipboard(text) {
         setTimeout(() => toast.remove(), 1500);
     } catch(e) {}
 }
+
+// ============================================================
+// KEYBOARD SHORTCUTS
+// ============================================================
+document.addEventListener('keydown', (e) => {
+    // Ctrl+V di mana aja → append ke bulk input (kecuali lagi fokus di input lain)
+    if (e.ctrlKey && e.key === 'v') {
+        const activeEl = document.activeElement;
+        
+        // Kalo lagi fokus di input/textarea (selain bulkInput), biarin default
+        if (activeEl && (
+            activeEl.tagName === 'INPUT' || 
+            (activeEl.tagName === 'TEXTAREA' && activeEl.id !== 'bulkInput')
+        )) {
+            return; // Biarin Ctrl+V normal
+        }
+        
+        // Kalo di bulkInput atau di luar input → append
+        e.preventDefault();
+        navigator.clipboard.readText().then(text => {
+            if (!text.trim()) return;
+            const bulk = document.getElementById('bulkInput');
+            const current = bulk.value.trim();
+            bulk.value = current + (current ? '\n' : '') + text;
+            bulk.dispatchEvent(new Event('input'));
+            showToast('📋 Data ditambahkan!', 'success');
+        }).catch(() => {
+            showToast('❌ Gagal baca clipboard', 'error');
+        });
+        return;
+    }
+
+    // Ctrl+Enter → mulai proses
+    if (e.ctrlKey && e.key === 'Enter') {
+        e.preventDefault();
+        const btnProcess = document.getElementById('btnProcess');
+        if (btnProcess && !btnProcess.disabled) {
+            processAccounts();
+        }
+    }
+});
+
+// ============================================================
+// TOAST HELPER
+// ============================================================
+function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.textContent = message;
+    toast.style.cssText = `
+        position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+        background: ${type === 'success' ? '#3bc48b' : '#f05b6b'}; color: #0b1018;
+        padding: 8px 18px; border-radius: 30px; font-size: 0.75rem; font-weight: 600;
+        z-index: 99999; pointer-events: none;
+        animation: fadeInOut 1.5s ease forwards;
+        font-family: 'Inter', sans-serif;
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 1500);
+}

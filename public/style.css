@@ -416,8 +416,9 @@ body.modal-open {
     padding: 14px;
     font-family: 'Inter', monospace;
     font-size: 0.8rem;
-    resize: vertical;
+    resize: none;
     transition: 0.2s;
+    overflow-y: auto;
 }
 
 #bulkInput:focus {
