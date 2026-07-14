@@ -587,7 +587,8 @@ function addToHistory(accounts, results) {
         }
     });
 
-    if (historyData.length > 200) historyData = historyData.slice(0, 200);
+    // HAPUS LIMIT 200
+    // if (historyData.length > 200) historyData = historyData.slice(0, 200);
     saveHistory();
     renderHistory();
 }
