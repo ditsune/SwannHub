@@ -291,22 +291,18 @@ async function attemptLogin(account) {
 
         browser = await puppeteer.launch({
             headless: false,
+            executablePath: 'C:\\Program Files\\BraveSoftware\\Brave-Browser\\Application\\brave.exe',
             args: [
                 '--no-sandbox',
-                '--disable-setuid-sandbox',
-                '--disable-blink-features=AutomationControlled',
-                '--window-position=-2000,0',   // di luar layar
-                `--window-size=${winSize.width},${winSize.height}`,
+                '--incognito',
+                '--window-position=-2000,0',
+                '--window-size=800,600',
             ]
         });
 
-        // Pakai incognito browser context beneran (bukan flag
-        // "--incognito" yang sebelumnya dipasang -- itu bukan Chrome
-        // flag yang valid dan gak ngefek apa pun; setiap puppeteer.launch()
-        // sebenernya udah pakai temp profile bersih, tapi biar eksplisit
-        // & pasti terisolasi antar akun, kita buka context incognito asli).
-        const context = await browser.createIncognitoBrowserContext();
-        const page = await context.newPage();
+        const page = await browser.newPage(); // JANGAN pake createIncognitoBrowserContext()
+
+        await page.setViewport({ width: 1366, height: 768 }); // Fixed viewport
 
         await page.evaluateOnNewDocument(() => {
             Object.defineProperty(navigator, 'webdriver', { get: () => false });
@@ -515,7 +511,7 @@ async function processAccounts(accounts, progressCallback) {
         console.log(`[${i + 1}/${accounts.length}] ${account.username} → ${result.status}\n`);
 
         if (i < accounts.length - 1) {
-            const delay = randomInt(2000, 5000);
+            const delay = randomInt(2000, 5000); // 2-5 detik
             console.log(`  ⏳ Jeda ${(delay / 1000).toFixed(1)}s...`);
             await wait(delay);
         }
