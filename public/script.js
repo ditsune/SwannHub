@@ -489,6 +489,7 @@ function displayResults(data) {
             }
             if (r.challenge === 'guess_image') extraInfo += `<span class="result-badge badge-challenge">🖼️ Tebak Gambar</span>`;
             if (r.challenge === 'passkey') extraInfo += `<span class="result-badge badge-challenge">🔑 Passkey</span>`;
+            if (r.challenge === 'captcha') extraInfo += `<span class="result-badge badge-challenge">🤖 Verif Bot</span>`;  // ← TAMBAHIN INI
 
             return `
                 <div class="result-item ${statusClass}">

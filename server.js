@@ -1,6 +1,5 @@
 const express = require('express');
 const path = require('path');
-const fs = require('fs');
 const { processAccounts } = require('./login-worker');
 const notifier = require('./notifier');
 
@@ -8,9 +7,6 @@ const app = express();
 app.use(express.json());
 app.use(express.static('public'));
 
-const RESULTS_LOG_FILE = path.join(__dirname, 'results.log');
-const RESULTS_LOG_DIR = __dirname;
-const LOG_RETENTION_DAYS = 14;
 const HEARTBEAT_INTERVAL_MS = 60 * 60 * 1000; // 1 jam, sama kayak Sheet Worker Python
 
 // Kalau di-set (lewat env var), semua request ke /api/* WAJIB kirim
@@ -34,80 +30,13 @@ function requireApiKey(req, res, next) {
 // ============================================================
 process.on('uncaughtException', (err) => {
     console.error('[FATAL] uncaughtException:', err);
-    appendResultLog(`[FATAL] uncaughtException: ${err.stack || err.message}`);
     notifier.notifyCrash('uncaughtException', err).finally(() => process.exit(1));
 });
 
 process.on('unhandledRejection', (reason) => {
     console.error('[FATAL] unhandledRejection:', reason);
-    appendResultLog(`[FATAL] unhandledRejection: ${reason && reason.stack ? reason.stack : reason}`);
     notifier.notifyCrash('unhandledRejection', reason);
 });
-
-// ============================================================
-// FILE LOGGING + ROTASI HARIAN
-// ============================================================
-// (fix) Sebelumnya results.log numpuk terus tanpa batas. Sekarang:
-// tiap append, dicek dulu apakah tanggal hari ini beda dari tanggal
-// file log terakhir kali ditulis -- kalau beda, file lama di-rename
-// jadi "results-YYYY-MM-DD.log" dan file baru dimulai kosong. File
-// yang lebih tua dari LOG_RETENTION_DAYS otomatis dihapus.
-let lastRotateCheckDate = null;
-
-function todayStr() {
-    return new Date().toISOString().slice(0, 10); // YYYY-MM-DD
-}
-
-function rotateLogIfNeeded() {
-    const today = todayStr();
-    if (lastRotateCheckDate === today) return; // udah dicek hari ini, skip biar murah
-    lastRotateCheckDate = today;
-
-    try {
-        if (!fs.existsSync(RESULTS_LOG_FILE)) return;
-
-        const stat = fs.statSync(RESULTS_LOG_FILE);
-        const fileDate = stat.mtime.toISOString().slice(0, 10);
-
-        if (fileDate !== today) {
-            const rotatedName = path.join(RESULTS_LOG_DIR, `results-${fileDate}.log`);
-            if (!fs.existsSync(rotatedName)) {
-                fs.renameSync(RESULTS_LOG_FILE, rotatedName);
-            }
-        }
-
-        cleanupOldLogs();
-    } catch (e) {
-        console.warn('Gagal rotasi results.log:', e.message);
-    }
-}
-
-function cleanupOldLogs() {
-    try {
-        const cutoff = Date.now() - LOG_RETENTION_DAYS * 24 * 60 * 60 * 1000;
-        const files = fs.readdirSync(RESULTS_LOG_DIR).filter(f => /^results-\d{4}-\d{2}-\d{2}\.log$/.test(f));
-        for (const f of files) {
-            const full = path.join(RESULTS_LOG_DIR, f);
-            const stat = fs.statSync(full);
-            if (stat.mtimeMs < cutoff) {
-                fs.unlinkSync(full);
-                console.log(`[log-rotation] Hapus log lama: ${f}`);
-            }
-        }
-    } catch (e) {
-        console.warn('Gagal cleanup log lama:', e.message);
-    }
-}
-
-function appendResultLog(line) {
-    try {
-        rotateLogIfNeeded();
-        const ts = new Date().toISOString();
-        fs.appendFileSync(RESULTS_LOG_FILE, `[${ts}] ${line}\n`);
-    } catch (e) {
-        console.warn('Gagal nulis results.log:', e.message);
-    }
-}
 
 // Store results dan status
 let processingStatus = {
@@ -142,7 +71,6 @@ app.post('/api/process-accounts', requireApiKey, async (req, res) => {
         totalAccounts: accounts.length
     });
 
-    appendResultLog(`Batch mulai: ${accounts.length} akun.`);
     notifier.notifyBatchStart(accounts.length);
 
     try {
@@ -170,13 +98,11 @@ app.post('/api/process-accounts', requireApiKey, async (req, res) => {
         const success = results.filter(r => r.status === 'success').length;
         const skip = results.filter(r => r.status === 'skip').length;
         const failed = results.filter(r => r.status === 'failed').length;
-        appendResultLog(`Batch selesai: total=${results.length} sukses=${success} skip=${skip} gagal=${failed}`);
         notifier.notifyBatchDone(results);
 
     } catch (error) {
         console.error('Processing error:', error);
         processingStatus.isProcessing = false;
-        appendResultLog(`Batch error: ${error.stack || error.message}`);
         notifier.notifyCrash('processAccounts batch', error);
     }
 });
@@ -209,7 +135,6 @@ app.listen(PORT, () => {
     if (!API_KEY) {
         console.warn('[warning] SWANNHUB_API_KEY belum di-set -- endpoint /api/* TERBUKA TANPA AUTH. Aman kalau cuma diakses dari localhost sendiri, tapi WAJIB di-set kalau server ini bisa diakses dari luar.');
     }
-    appendResultLog(`Server start di port ${PORT}.`);
     notifier.notifyServerStart(PORT);
 });
 
@@ -224,6 +149,5 @@ setInterval(() => {
 // jelas di log & Discord bahwa ini SENGAJA dimatikan, bukan crash.
 process.on('SIGINT', () => {
     console.log('Dihentikan manual (CTRL+C).');
-    appendResultLog('Server dihentikan manual (SIGINT).');
     notifier.notifyDiscord('🛑 SwannHub server dihentikan manual.').finally(() => process.exit(0));
 });

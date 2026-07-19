@@ -121,6 +121,12 @@ async function checkPageState(page) {
                 if (document.querySelector(sel)) return { state: 'home' };
             }
 
+            // DETEKSI FUNCAPTCHA / ARKOSELABS (verifikasi bot)
+            const captchaFrame = document.querySelector('iframe[src*="arkoselabs.roblox.com"]');
+            if (captchaFrame) {
+                return { state: 'captcha', message: 'Verifikasi bot terdeteksi' };
+            }
+
             const errorSelectors = [
                 '#login-form-error', '.login-error', '.text-error',
                 '[aria-live="polite"] .text-error', '.alert-danger', '.alert-warning'
@@ -406,6 +412,13 @@ async function attemptLogin(account) {
             result.message = '⚠️ Tebak Gambar';
             result.challenge = 'guess_image';
             result.expectedFailure = true;
+
+        } else if (state.state === 'captcha') {
+            console.log(`[${account.username}] 🤖 CAPTCHA terdeteksi - retry`);
+            result.status = 'failed';
+            result.message = '🤖 Verifikasi Bot';
+            result.challenge = 'captcha';
+            // expectedFailure = false → bakal di-retry
 
         } else if (state.state === 'passkey') {
             console.log(`[${account.username}] 🔑 Passkey only - skip`);

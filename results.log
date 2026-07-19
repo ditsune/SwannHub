@@ -1,68 +1,145 @@
-[2026-07-16T00:25:48.122Z] Batch mulai: 1 akun.
-[2026-07-16T00:26:04.483Z] Batch selesai: total=1 sukses=0 skip=1 gagal=0
-[2026-07-16T00:26:39.189Z] Batch mulai: 1 akun.
-[2026-07-16T00:27:11.213Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
-[2026-07-16T00:49:16.093Z] Batch mulai: 2 akun.
-[2026-07-16T00:50:17.669Z] Batch selesai: total=2 sukses=2 skip=0 gagal=0
-[2026-07-16T01:15:07.352Z] Batch mulai: 1 akun.
-[2026-07-16T01:15:41.306Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
-[2026-07-16T01:17:42.675Z] Batch mulai: 1 akun.
-[2026-07-16T01:18:03.624Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
-[2026-07-16T01:23:35.702Z] Batch mulai: 1 akun.
-[2026-07-16T01:23:53.305Z] Batch selesai: total=1 sukses=0 skip=1 gagal=0
-[2026-07-16T01:43:47.894Z] Batch mulai: 1 akun.
-[2026-07-16T01:44:20.567Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
-[2026-07-16T01:56:52.621Z] Batch mulai: 1 akun.
-[2026-07-16T01:57:28.795Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
-[2026-07-16T02:01:24.991Z] Batch mulai: 1 akun.
-[2026-07-16T02:02:00.297Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
-[2026-07-16T02:12:36.496Z] Batch mulai: 1 akun.
-[2026-07-16T02:13:11.641Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
-[2026-07-16T02:23:51.381Z] Batch mulai: 1 akun.
-[2026-07-16T02:24:25.577Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
-[2026-07-16T02:52:09.609Z] Batch mulai: 1 akun.
-[2026-07-16T02:52:43.175Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
-[2026-07-16T02:55:04.600Z] Batch mulai: 1 akun.
-[2026-07-16T02:55:37.530Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
-[2026-07-16T02:58:24.560Z] Batch mulai: 1 akun.
-[2026-07-16T02:58:41.170Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
-[2026-07-16T03:06:51.780Z] Batch mulai: 1 akun.
-[2026-07-16T03:07:26.212Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
-[2026-07-16T03:15:06.592Z] Batch mulai: 1 akun.
-[2026-07-16T03:15:22.597Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
-[2026-07-16T03:22:43.960Z] Batch mulai: 1 akun.
-[2026-07-16T03:22:59.202Z] Batch selesai: total=1 sukses=0 skip=1 gagal=0
-[2026-07-16T03:51:17.150Z] Batch mulai: 1 akun.
-[2026-07-16T03:51:36.429Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
-[2026-07-16T03:56:26.087Z] Batch mulai: 1 akun.
-[2026-07-16T03:56:58.818Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
-[2026-07-16T04:08:49.144Z] Batch mulai: 1 akun.
-[2026-07-16T04:09:07.246Z] Batch selesai: total=1 sukses=0 skip=1 gagal=0
-[2026-07-16T04:17:00.020Z] Batch mulai: 1 akun.
-[2026-07-16T04:17:19.732Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
-[2026-07-16T06:43:50.083Z] Server start di port 3000.
-[2026-07-16T06:45:10.989Z] Server dihentikan manual (SIGINT).
-[2026-07-16T06:45:14.037Z] Server start di port 3000.
-[2026-07-16T06:48:49.832Z] Batch mulai: 3 akun.
-[2026-07-16T06:50:18.014Z] Batch selesai: total=3 sukses=2 skip=1 gagal=0
-[2026-07-16T06:51:53.832Z] Batch mulai: 13 akun.
-[2026-07-16T06:58:25.632Z] Batch selesai: total=13 sukses=10 skip=2 gagal=1
-[2026-07-16T07:04:22.958Z] Batch mulai: 1 akun.
-[2026-07-16T07:04:58.082Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
-[2026-07-16T07:12:09.715Z] Batch mulai: 1 akun.
-[2026-07-16T07:12:49.538Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
-[2026-07-16T07:18:32.075Z] Batch mulai: 1 akun.
-[2026-07-16T07:18:48.985Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
-[2026-07-16T07:19:01.158Z] Batch mulai: 1 akun.
-[2026-07-16T07:19:37.151Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
-[2026-07-16T07:20:08.141Z] Batch mulai: 1 akun.
-[2026-07-16T07:20:25.471Z] Batch selesai: total=1 sukses=0 skip=1 gagal=0
-[2026-07-16T07:39:55.166Z] Batch mulai: 1 akun.
-[2026-07-16T07:40:12.006Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
-[2026-07-16T07:54:53.711Z] Batch mulai: 1 akun.
-[2026-07-16T07:55:31.407Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
-[2026-07-16T08:33:20.111Z] Server start di port 3000.
-[2026-07-16T08:33:59.062Z] Batch mulai: 5 akun.
-[2026-07-16T08:38:12.833Z] Batch selesai: total=5 sukses=2 skip=2 gagal=1
-[2026-07-16T08:52:48.649Z] Batch mulai: 2 akun.
-[2026-07-16T08:53:32.331Z] Batch selesai: total=2 sukses=2 skip=0 gagal=0
+[2026-07-19T03:05:28.656Z] Server start di port 3000.
+[2026-07-19T03:08:41.192Z] Batch mulai: 1 akun.
+[2026-07-19T03:09:51.433Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
+[2026-07-19T03:18:42.470Z] Batch mulai: 1 akun.
+[2026-07-19T03:20:25.787Z] Batch selesai: total=1 sukses=0 skip=0 gagal=1
+[2026-07-19T03:20:41.216Z] Batch mulai: 1 akun.
+[2026-07-19T03:22:32.196Z] Batch selesai: total=1 sukses=0 skip=0 gagal=1
+[2026-07-19T03:23:11.302Z] Batch mulai: 2 akun.
+[2026-07-19T03:25:23.486Z] Batch selesai: total=2 sukses=2 skip=0 gagal=0
+[2026-07-19T03:34:05.020Z] Batch mulai: 5 akun.
+[2026-07-19T03:37:02.474Z] Batch selesai: total=5 sukses=2 skip=2 gagal=1
+[2026-07-19T03:45:52.148Z] Server dihentikan manual (SIGINT).
+[2026-07-19T03:45:56.879Z] Server start di port 3000.
+[2026-07-19T03:46:34.335Z] Batch mulai: 1 akun.
+[2026-07-19T03:47:07.331Z] Batch selesai: total=1 sukses=0 skip=1 gagal=0
+[2026-07-19T03:47:49.237Z] Batch mulai: 4 akun.
+[2026-07-19T03:49:55.491Z] Batch selesai: total=4 sukses=3 skip=1 gagal=0
+[2026-07-19T03:52:38.302Z] Batch mulai: 1 akun.
+[2026-07-19T03:53:40.037Z] Batch selesai: total=1 sukses=0 skip=0 gagal=1
+[2026-07-19T03:55:55.053Z] Batch mulai: 3 akun.
+[2026-07-19T03:59:02.466Z] Batch selesai: total=3 sukses=3 skip=0 gagal=0
+[2026-07-19T04:00:57.823Z] Batch mulai: 3 akun.
+[2026-07-19T04:02:19.973Z] Batch selesai: total=3 sukses=1 skip=2 gagal=0
+[2026-07-19T04:03:33.652Z] Batch mulai: 1 akun.
+[2026-07-19T04:04:28.093Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
+[2026-07-19T04:07:12.405Z] Batch mulai: 1 akun.
+[2026-07-19T04:07:47.044Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
+[2026-07-19T04:11:10.845Z] Batch mulai: 1 akun.
+[2026-07-19T04:11:45.417Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
+[2026-07-19T04:21:00.644Z] Batch mulai: 1 akun.
+[2026-07-19T04:21:17.321Z] Batch selesai: total=1 sukses=0 skip=1 gagal=0
+[2026-07-19T04:31:29.052Z] Batch mulai: 1 akun.
+[2026-07-19T04:32:09.696Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
+[2026-07-19T04:32:39.324Z] Batch mulai: 1 akun.
+[2026-07-19T04:33:53.694Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
+[2026-07-19T05:09:34.910Z] Batch mulai: 2 akun.
+[2026-07-19T05:11:30.666Z] Batch selesai: total=2 sukses=0 skip=0 gagal=2
+[2026-07-19T05:23:40.260Z] Batch mulai: 3 akun.
+[2026-07-19T05:25:39.839Z] Batch selesai: total=3 sukses=3 skip=0 gagal=0
+[2026-07-19T05:27:28.515Z] [FATAL] uncaughtException: Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:2008:16)
+    at listenInCluster (node:net:2065:12)
+    at Server.listen (node:net:2170:7)
+    at app.listen (C:\Users\dits\Downloads\SwannHub\node_modules\express\lib\application.js:635:24)
+    at Object.<anonymous> (C:\Users\dits\Downloads\SwannHub\server.js:207:5)
+    at Module._compile (node:internal/modules/cjs/loader:1830:14)
+    at Object..js (node:internal/modules/cjs/loader:1961:10)
+    at Module.load (node:internal/modules/cjs/loader:1553:32)
+    at Module._load (node:internal/modules/cjs/loader:1355:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+[2026-07-19T05:30:49.630Z] Batch mulai: 1 akun.
+[2026-07-19T05:31:26.122Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
+[2026-07-19T05:37:44.333Z] Batch mulai: 1 akun.
+[2026-07-19T05:38:25.892Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
+[2026-07-19T05:49:09.276Z] Batch mulai: 1 akun.
+[2026-07-19T05:49:30.613Z] Batch selesai: total=1 sukses=0 skip=1 gagal=0
+[2026-07-19T05:52:10.356Z] Batch mulai: 1 akun.
+[2026-07-19T05:52:47.417Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
+[2026-07-19T05:55:52.261Z] Batch mulai: 2 akun.
+[2026-07-19T05:57:18.681Z] Batch selesai: total=2 sukses=2 skip=0 gagal=0
+[2026-07-19T06:26:37.976Z] Batch mulai: 2 akun.
+[2026-07-19T06:28:16.291Z] Batch selesai: total=2 sukses=1 skip=0 gagal=1
+[2026-07-19T06:28:30.262Z] Batch mulai: 1 akun.
+[2026-07-19T06:29:04.409Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
+[2026-07-19T06:44:06.294Z] Batch mulai: 1 akun.
+[2026-07-19T06:44:24.927Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
+[2026-07-19T06:59:38.859Z] Batch mulai: 1 akun.
+[2026-07-19T07:00:21.985Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
+[2026-07-19T07:19:48.563Z] Batch mulai: 1 akun.
+[2026-07-19T07:20:21.543Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
+[2026-07-19T07:43:43.142Z] Batch mulai: 1 akun.
+[2026-07-19T07:44:04.320Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
+[2026-07-19T07:50:47.114Z] Batch mulai: 1 akun.
+[2026-07-19T07:51:42.096Z] Batch selesai: total=1 sukses=0 skip=0 gagal=1
+[2026-07-19T07:51:58.181Z] Batch mulai: 1 akun.
+[2026-07-19T07:52:29.834Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
+[2026-07-19T08:08:49.491Z] Batch mulai: 1 akun.
+[2026-07-19T08:09:45.930Z] Batch selesai: total=1 sukses=0 skip=0 gagal=1
+[2026-07-19T08:11:45.932Z] Batch mulai: 1 akun.
+[2026-07-19T08:12:27.066Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
+[2026-07-19T08:27:54.648Z] Batch mulai: 3 akun.
+[2026-07-19T08:29:54.045Z] Batch selesai: total=3 sukses=2 skip=1 gagal=0
+[2026-07-19T08:46:05.294Z] Batch mulai: 1 akun.
+[2026-07-19T08:47:04.049Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
+[2026-07-19T08:56:18.690Z] Batch mulai: 1 akun.
+[2026-07-19T08:56:35.313Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
+[2026-07-19T08:59:43.924Z] Batch mulai: 1 akun.
+[2026-07-19T09:00:40.848Z] Batch selesai: total=1 sukses=0 skip=0 gagal=1
+[2026-07-19T09:01:09.228Z] Batch mulai: 1 akun.
+[2026-07-19T09:02:21.013Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
+[2026-07-19T09:05:12.294Z] Batch mulai: 1 akun.
+[2026-07-19T09:05:50.413Z] Batch selesai: total=1 sukses=0 skip=1 gagal=0
+[2026-07-19T09:14:04.111Z] Batch mulai: 3 akun.
+[2026-07-19T09:15:21.428Z] Batch selesai: total=3 sukses=2 skip=1 gagal=0
+[2026-07-19T09:21:57.794Z] Batch mulai: 3 akun.
+[2026-07-19T09:23:31.160Z] Batch selesai: total=3 sukses=1 skip=2 gagal=0
+[2026-07-19T09:24:44.773Z] Batch mulai: 1 akun.
+[2026-07-19T09:25:21.336Z] Batch selesai: total=1 sukses=0 skip=1 gagal=0
+[2026-07-19T09:30:55.869Z] Batch mulai: 1 akun.
+[2026-07-19T09:31:35.828Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
+[2026-07-19T09:41:14.244Z] Batch mulai: 5 akun.
+[2026-07-19T09:44:17.861Z] Batch selesai: total=5 sukses=5 skip=0 gagal=0
+[2026-07-19T09:44:26.648Z] Batch mulai: 8 akun.
+[2026-07-19T09:48:46.543Z] Batch selesai: total=8 sukses=6 skip=1 gagal=1
+[2026-07-19T09:55:53.939Z] Batch mulai: 1 akun.
+[2026-07-19T09:56:36.675Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
+[2026-07-19T09:57:53.327Z] Batch mulai: 1 akun.
+[2026-07-19T09:58:57.920Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
+[2026-07-19T10:05:25.905Z] Batch mulai: 3 akun.
+[2026-07-19T10:07:34.494Z] Batch selesai: total=3 sukses=1 skip=1 gagal=1
+[2026-07-19T10:08:20.322Z] Batch mulai: 1 akun.
+[2026-07-19T10:09:02.920Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
+[2026-07-19T10:09:33.782Z] Batch mulai: 2 akun.
+[2026-07-19T10:10:43.662Z] Batch selesai: total=2 sukses=1 skip=1 gagal=0
+[2026-07-19T10:12:30.482Z] Batch mulai: 1 akun.
+[2026-07-19T10:13:24.828Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
+[2026-07-19T10:13:32.347Z] Batch mulai: 1 akun.
+[2026-07-19T10:14:26.717Z] Server dihentikan manual (SIGINT).
+[2026-07-19T10:14:39.864Z] Server start di port 3000.
+[2026-07-19T10:15:06.079Z] Batch mulai: 1 akun.
+[2026-07-19T10:15:54.509Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
+[2026-07-19T10:33:31.443Z] Batch mulai: 1 akun.
+[2026-07-19T10:34:27.111Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
+[2026-07-19T10:35:01.859Z] Batch mulai: 1 akun.
+[2026-07-19T10:35:38.367Z] Batch selesai: total=1 sukses=0 skip=1 gagal=0
+[2026-07-19T10:50:14.959Z] Batch mulai: 1 akun.
+[2026-07-19T10:50:51.031Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
+[2026-07-19T10:55:23.975Z] Batch mulai: 1 akun.
+[2026-07-19T10:55:43.181Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
+[2026-07-19T11:10:42.986Z] Batch mulai: 2 akun.
+[2026-07-19T11:11:58.026Z] Batch selesai: total=2 sukses=1 skip=1 gagal=0
+[2026-07-19T11:15:22.902Z] Batch mulai: 1 akun.
+[2026-07-19T11:15:39.611Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
+[2026-07-19T11:41:51.052Z] Batch mulai: 5 akun.
+[2026-07-19T11:44:12.872Z] Batch selesai: total=5 sukses=4 skip=1 gagal=0
+[2026-07-19T11:44:24.690Z] Batch mulai: 1 akun.
+[2026-07-19T11:44:41.883Z] Batch selesai: total=1 sukses=0 skip=1 gagal=0
+[2026-07-19T11:49:58.640Z] Batch mulai: 1 akun.
+[2026-07-19T11:51:16.200Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
+[2026-07-19T12:08:24.389Z] Batch mulai: 1 akun.
+[2026-07-19T12:09:15.182Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
+[2026-07-19T12:15:42.479Z] Batch mulai: 1 akun.
+[2026-07-19T12:16:29.540Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
+[2026-07-19T12:21:42.158Z] Batch mulai: 1 akun.
+[2026-07-19T12:22:18.389Z] Batch selesai: total=1 sukses=1 skip=0 gagal=0
