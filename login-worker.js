@@ -361,6 +361,34 @@ async function attemptLogin(account) {
         await humanScroll(page);
         await humanMoveMouse(page);
 
+        // =====================================================
+        // TRIK ANTI-VERIF: Sign Up → Login (KLIK BUTTON)
+        // =====================================================
+        console.log(`[${account.username}] 🎯 Trik Sign Up → Login...`);
+        try {
+            // Klik "Sign Up" button di navbar
+            await page.click('#sign-up-button');
+            await wait(randomWait(3000, 5000));
+            
+            // Klik "Log In" button di halaman sign up
+            await page.waitForSelector('#main-login-button', { timeout: 10000 });
+            await page.click('#main-login-button');
+            await wait(randomWait(2000, 3500));
+            
+        } catch(e) {
+            console.warn(`[${account.username}] Trik gagal, fallback ke navigate`);
+            try {
+                await page.goto('https://www.roblox.com/login', {
+                    waitUntil: 'networkidle2',
+                    timeout: 15000
+                });
+                await wait(randomWait(1500, 2500));
+            } catch(e2) {}
+        }
+
+        await humanScroll(page);
+        await humanMoveMouse(page);
+
         result.message = 'Isi form...';
 
         await page.waitForSelector('#login-username', { timeout: 10000 });
