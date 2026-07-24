@@ -93,165 +93,152 @@ function parseBulk() {
         return;
     }
 
-    const lines = bulkText.split('\n').filter(line => line.trim() !== '');
+    const lines = bulkText.split('\n');
     const accounts = [];
     const errors = [];
 
-    const hasTabs = lines.some(line => line.includes('\t'));
+    let currentUsername = null;
+    let currentPassword = null;
+    const currentBackupCodes = [];
 
-    if (hasTabs) {
+    // Helper: simpan akun kalo lengkap
+    function saveAccount() {
+        if (currentUsername && currentPassword) {
+            if (!accounts.find(a => a.username === currentUsername)) {
+                accounts.push({
+                    username: currentUsername,
+                    password: currentPassword,
+                    backupCodes: [...currentBackupCodes].slice(0, 5)
+                });
+            }
+        }
+        currentUsername = null;
+        currentPassword = null;
+        currentBackupCodes.length = 0;
+    }
+
     for (let i = 0; i < lines.length; i++) {
-        const line = lines[i].trim();
-        const parts = line.split('\t');
-        
-        if (parts.length < 2) {
-            errors.push(`Baris ${i + 1}: Format salah`);
+        const trimmed = lines[i].trim();
+        if (!trimmed) {
+            // Baris kosong = pemisah akun
+            saveAccount();
             continue;
         }
-        
-        let username = parts[0].trim();
-        let password = '';
-        const backupCodes = [];
-        
-        // Deteksi: kolom pertama invoice? (TLOG/VILOG)
-        const isInvoice = /^(TLOG|VILOG)\d{8}-[A-Z0-9]{7}$/i.test(username);
-        
-        if (isInvoice) {
-            // Format: TLOG [TAB] username [TAB] password [TAB] Robux [TAB] code1...
-            username = parts[1] ? parts[1].trim() : '';  // Kolom 2
-            password = parts[2] ? parts[2].trim() : '';  // Kolom 3
-            
-            // Mulai dari kolom 4+ (skip Robux, ambil backup codes)
-            for (let j = 3; j < parts.length && backupCodes.length < 5; j++) {
-                const code = parts[j].trim();
-                // Skip kolom yang mengandung "Robux"
-                if (/robux/i.test(code)) continue;
-                if (code && /^[a-z0-9]{8,9}$/i.test(code)) {
-                    backupCodes.push(code);
-                }
-            }
-        } else {
-            // Format biasa: username [TAB] password [TAB] code1...
-            password = parts[1] ? parts[1].trim() : '';
-            for (let j = 2; j < parts.length && backupCodes.length < 5; j++) {
-                const code = parts[j].trim();
-                if (code) backupCodes.push(code);
-            }
-        }
-        
-        if (!username || !password) {
-            errors.push(`Baris ${i + 1}: Username/password kosong`);
-            continue;
-        }
-        
-        accounts.push({ username, password, backupCodes });
-    }
-        }else {
-        // Split by block (dipisah oleh garis kosong atau header DETAIL PESANAN / NOTA)
-        const blocks = bulkText.split(/DETAIL PESANAN KAMU/);
 
-        for (let b = 0; b < blocks.length; b++) {
-            const block = blocks[b].trim();
-            if (!block) continue;
+        // ==========================================
+        // FORMAT TAB (VILOG/TLOG atau username biasa)
+        // ==========================================
+        if (trimmed.includes('\t')) {
+            saveAccount(); // Simpan akun sebelumnya kalo ada
             
-            const blockLines = block.split('\n');
-
-            let username = null;
-            let password = null;
+            const parts = trimmed.split('\t');
+            if (parts.length < 2) continue;
+            
+            let username = parts[0].trim();
+            let password = '';
             const backupCodes = [];
-
-            for (const line of blockLines) {
-                const trimmed = line.trim();
-
-                // Skip non-account lines
-                if (/^(Invoice ID|Terbayar|Tanggal|Mohon|Harap|⌗|—|Pesanan|MinMayo|@|http)/i.test(trimmed)) continue;
-                if (/^(TLOG|VILOG)\d{8}-[A-Z0-9]{7}$/i.test(trimmed)) continue;
-                if (/Jumlah Robux/i.test(trimmed)) continue;
-                if (/\b(Rp|IDR)\s*[\d.,]+/i.test(trimmed)) continue;
-
-                // Username detection
-                if (/👤\s*Username/i.test(trimmed)) {
-                    username = trimmed.replace(/.*Username\s*[:`']\s*/i, '').replace(/['`"]/g, '').trim();
-                    continue;
+            
+            const isInvoice = /^(TLOG|VILOG)\d{8}-[A-Z0-9]{7}$/i.test(username);
+            
+            if (isInvoice) {
+                if (parts.length < 3) continue;
+                username = parts[1].trim();
+                password = parts[2].trim();
+                
+                for (let j = 3; j < parts.length && backupCodes.length < 5; j++) {
+                    const code = parts[j].trim();
+                    if (/robux/i.test(code)) continue;
+                    if (code && /^[a-z0-9]{8,9}$/i.test(code)) backupCodes.push(code);
                 }
-                if (/^(usn|username|user|akun|id)\s*[:=]/i.test(trimmed)) {
-                    username = trimmed.replace(/^(usn|username|user|akun|id)\s*[:=]\s*/i, '').replace(/['`"]/g, '').trim();
-                    continue;
-                }
-                const usnMatch = trimmed.match(/^usn\s*:\s*(.+)/i);
-                if (usnMatch) { username = usnMatch[1].trim(); continue; }
-
-                // Password detection
-                if (/🔑\s*Password/i.test(trimmed)) {
-                    password = trimmed.replace(/.*Password\s*[:`']\s*/i, '').replace(/['`"]/g, '').trim();
-                    continue;
-                }
-                if (/^(pw|pass|password|pwd|sandi)\s*[:=]/i.test(trimmed)) {
-                    password = trimmed.replace(/^(pw|pass|password|pwd|sandi)\s*[:=]\s*/i, '').replace(/['`"]/g, '').trim();
-                    continue;
-                }
-                const pwMatch = trimmed.match(/^pw\s*:\s*(.+)/i);
-                if (pwMatch) { password = pwMatch[1].trim(); continue; }
-
-                // Backup Code detection
-                if (/🛡\s*Backup/i.test(trimmed)) {
-                    const codeText = trimmed.replace(/.*Backup[^:]*\s*[:`']\s*/i, '').replace(/['`"]/g, '');
-                    const codes = codeText.split(/[,;\s]+/).map(c => c.trim()).filter(c => /^[a-z0-9]{8,9}$/i.test(c));
-                    backupCodes.push(...codes);
-                    continue;
-                }
-                if (/^(backup|code|kode|backup code|backupcode)\s*[:=]/i.test(trimmed)) {
-                    const codeText = trimmed.replace(/^(backup|code|kode|backup code|backupcode)\s*[:=]\s*/i, '').replace(/['`"]/g, '');
-                    const codes = codeText.split(/[,;\s]+/).map(c => c.trim()).filter(c => /^[a-z0-9]{8,9}$/i.test(c));
-                    backupCodes.push(...codes);
-                    continue;
-                }
-
-                // Backup code standalone (8-9 char alphanumeric)
-                if (/^[a-z0-9]{8,9}$/i.test(trimmed)) {
-                    backupCodes.push(trimmed);
-                    continue;
+            } else {
+                password = parts[1].trim();
+                for (let j = 2; j < parts.length && backupCodes.length < 5; j++) {
+                    const code = parts[j].trim();
+                    if (code) backupCodes.push(code);
                 }
             }
-
-            // Fallback: cari di baris setelah label
-            if (!username) {
-                for (let j = 0; j < blockLines.length; j++) {
-                    if (/usn|username|user|akun/i.test(blockLines[j]) && blockLines[j + 1]) {
-                        username = blockLines[j + 1].trim(); break;
-                    }
-                }
-            }
-            if (!password) {
-                for (let j = 0; j < blockLines.length; j++) {
-                    if (/pw|pass|password|sandi/i.test(blockLines[j]) && blockLines[j + 1]) {
-                        password = blockLines[j + 1].trim(); break;
-                    }
-                }
-            }
-
+            
             if (username && password) {
-                // Skip duplicate accounts
-                const exists = accounts.find(a => a.username === username);
-                if (!exists) {
-                    accounts.push({ username, password, backupCodes: backupCodes.slice(0, 5) });
+                if (!accounts.find(a => a.username === username)) {
+                    accounts.push({ username, password, backupCodes });
                 }
             }
+            continue;
+        }
+
+        // ==========================================
+        // FORMAT DETAIL PESANAN (text-based)
+        // ==========================================
+        
+        // Skip noise
+        if (/^(Invoice ID|Terbayar|Tanggal|Mohon|Harap|⌗|—|Pesanan|MinMayo|@|http)/i.test(trimmed)) continue;
+        if (/^(TLOG|VILOG)\d{8}-[A-Z0-9]{7}$/i.test(trimmed)) continue;
+        if (/Jumlah Robux|✨/i.test(trimmed)) continue;
+        if (/\b(Rp|IDR)\s*[\d.,]+/i.test(trimmed)) continue;
+
+        // Header DETAIL PESANAN = akun baru
+        if (/DETAIL PESANAN KAMU/i.test(trimmed)) {
+            saveAccount(); // Simpan akun sebelumnya
+            continue;
+        }
+
+        // Username
+        if (/👤\s*Username/i.test(trimmed)) {
+            currentUsername = trimmed.replace(/.*Username\s*[:`']\s*/i, '').replace(/['`"]/g, '').trim();
+            continue;
+        }
+        if (/^(usn|username|user|akun|id)\s*[:=]/i.test(trimmed)) {
+            currentUsername = trimmed.replace(/^(usn|username|user|akun|id)\s*[:=]\s*/i, '').replace(/['`"]/g, '').trim();
+            continue;
+        }
+        const usnMatch = trimmed.match(/^usn\s*:\s*(.+)/i);
+        if (usnMatch) { currentUsername = usnMatch[1].trim(); continue; }
+
+        // Password
+        if (/🔑\s*Password/i.test(trimmed)) {
+            currentPassword = trimmed.replace(/.*Password\s*[:`']\s*/i, '').replace(/['`"]/g, '').trim();
+            continue;
+        }
+        if (/^(pw|pass|password|pwd|sandi)\s*[:=]/i.test(trimmed)) {
+            currentPassword = trimmed.replace(/^(pw|pass|password|pwd|sandi)\s*[:=]\s*/i, '').replace(/['`"]/g, '').trim();
+            continue;
+        }
+        const pwMatch = trimmed.match(/^pw\s*:\s*(.+)/i);
+        if (pwMatch) { currentPassword = pwMatch[1].trim(); continue; }
+
+        // Backup Code
+        if (/🛡\s*Backup/i.test(trimmed)) {
+            const codeText = trimmed.replace(/.*Backup[^:]*\s*[:`']\s*/i, '').replace(/['`"]/g, '');
+            const codes = codeText.split(/[,;\s]+/).map(c => c.trim()).filter(c => /^[a-z0-9]{8,9}$/i.test(c));
+            currentBackupCodes.push(...codes);
+            continue;
+        }
+        if (/^(backup|code|kode|backup code|backupcode)\s*[:=]/i.test(trimmed)) {
+            const codeText = trimmed.replace(/^(backup|code|kode|backup code|backupcode)\s*[:=]\s*/i, '').replace(/['`"]/g, '');
+            const codes = codeText.split(/[,;\s]+/).map(c => c.trim()).filter(c => /^[a-z0-9]{8,9}$/i.test(c));
+            currentBackupCodes.push(...codes);
+            continue;
+        }
+
+        // Standalone backup code
+        if (/^[a-z0-9]{8,9}$/i.test(trimmed)) {
+            currentBackupCodes.push(trimmed);
+            continue;
         }
     }
+
+    // Simpan akun terakhir
+    saveAccount();
 
     if (accounts.length === 0) {
-        parseResult.textContent = '❌ Tidak ada data valid! ' + errors.join('; ');
+        parseResult.textContent = '❌ Tidak ada data valid!';
         parseResult.className = 'parse-result error';
         return;
     }
 
     fillForm(accounts);
-
-    let msg = `✅ ${accounts.length} akun berhasil diparse!`;
-    if (errors.length > 0) msg += ` ⚠️ ${errors.length} error`;
-    parseResult.textContent = msg;
-    parseResult.className = errors.length > 0 ? 'parse-result warning' : 'parse-result success';
+    parseResult.textContent = `✅ ${accounts.length} akun berhasil diparse!`;
+    parseResult.className = accounts.length > 0 ? 'parse-result success' : 'parse-result warning';
 }
 
 // ============================================================
