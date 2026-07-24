@@ -148,7 +148,7 @@ function parseBulk() {
     }
         }else {
         // Split by block (dipisah oleh garis kosong atau header DETAIL PESANAN / NOTA)
-        const blocks = bulkText.split(/\n\s*\n/);
+        const blocks = bulkText.split(/DETAIL PESANAN KAMU/);
 
         for (let b = 0; b < blocks.length; b++) {
             const block = blocks[b].trim();
@@ -494,7 +494,7 @@ function displayResults(data) {
             return `
                 <div class="result-item ${statusClass}">
                     <span class="result-icon">${icon}</span>
-                    <span class="result-username" onclick="copyToClipboard('${r.username}')" title="Click to copy">${r.username}</span>
+                    <span class="result-username" data-copy="${r.username}" title="Click to copy">${r.username}</span>
                     <span class="result-status">${r.status}</span>
                     <span class="result-message">${r.message || ''}</span>
                     ${extraInfo}
@@ -613,7 +613,7 @@ function renderHistory(filter = '') {
         container.innerHTML = filtered.map(h => `
             <div class="history-item ${h.status}">
                 <span class="history-item-icon">${h.status === 'success' ? '✅' : h.status === 'skip' ? '⚠️' : '❌'}</span>
-                <span class="history-item-username" onclick="copyToClipboard('${h.username}')" title="Click to copy">${h.username}</span>
+                <span class="history-item-username" data-copy="${h.username}" title="Click to copy">${h.username}</span>
                 <span class="history-item-message">${h.message}</span>
                 <div class="history-item-badges">
                     ${h.twoSV ? `<span class="result-badge badge-2sv">${h.twoSV}</span>` : ''}
@@ -726,3 +726,16 @@ function showToast(message, type = 'success') {
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 1500);
 }
+
+// ============================================================
+// EVENT DELEGATION - Copy username (biar ga ilang pas polling)
+// ============================================================
+document.addEventListener('click', (e) => {
+    const copyEl = e.target.closest('[data-copy]');
+    if (copyEl) {
+        e.preventDefault();
+        e.stopPropagation();
+        const text = copyEl.getAttribute('data-copy');
+        if (text) copyToClipboard(text);
+    }
+});
